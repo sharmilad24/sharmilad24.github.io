@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sharmila Dongari — Data Analytics & Machine Learning</title>
+<meta name="description" content="Portfolio of Sharmila Dongari, Computer Science student at Georgia State University focused on data analytics and machine learning.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F7F6F2;
+  --ink: #1A1F2B;
+  --ink-soft: #4A5060;
+  --gold: #C8830A;
+  --rail: #0F6E56;
+  --line: #DDDBD2;
+  --board: #23281F;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+::selection { background: var(--gold); color: var(--paper); }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: var(--rail); text-decoration: none; }
+a:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; border-radius: 2px; }
+.wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+/* link underline sweep */
+.u { position: relative; }
+.u::after {
+  content: ''; position: absolute; left: 0; bottom: -2px; height: 1.5px; width: 100%;
+  background: var(--rail); transform: scaleX(0); transform-origin: right;
+  transition: transform 0.32s cubic-bezier(0.65, 0, 0.35, 1);
+}
+.u:hover::after, .u:focus-visible::after { transform: scaleX(1); transform-origin: left; }
+
+/* Header */
+header { padding: 24px 0; position: sticky; top: 0; background: rgba(247,246,242,0.88); backdrop-filter: blur(8px); z-index: 50; border-bottom: 1px solid var(--line); }
+header .wrap { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+.mark { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-soft); }
+.mark b { color: var(--gold); font-weight: 500; }
+nav a { font-family: 'IBM Plex Mono', monospace; font-size: 13px; margin-left: 20px; color: var(--ink-soft); }
+nav a:hover { color: var(--rail); }
+
+/* Hero */
+.hero { padding: 84px 0 56px; }
+.hero .eyebrow {
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.14em;
+  color: var(--gold); text-transform: uppercase; margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero .eyebrow::before {
+  content: ''; width: 9px; height: 9px; border-radius: 50%; background: var(--gold);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1);} 50% { opacity: 0.35; transform: scale(0.75);} }
+.hero h1 {
+  font-family: 'Archivo', sans-serif; font-weight: 800;
+  font-size: clamp(42px, 8.5vw, 74px); line-height: 1.02; letter-spacing: -0.02em;
+  margin-bottom: 10px;
+}
+.hero h1 .row { display: block; overflow: hidden; }
+.hero h1 .row span { display: inline-block; transform: translateY(110%); animation: arrive 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+.hero h1 .row:nth-child(2) span { animation-delay: 0.12s; }
+@keyframes arrive { to { transform: translateY(0); } }
+
+/* Split-flap board */
+.board {
+  display: inline-flex; gap: 4px; margin: 18px 0 26px; padding: 12px 16px;
+  background: var(--board); border-radius: 8px;
+  box-shadow: inset 0 2px 6px rgba(0,0,0,0.5);
+}
+.board .cell {
+  font-family: 'IBM Plex Mono', monospace; font-size: clamp(15px, 3vw, 20px); font-weight: 500;
+  color: #F2C766; background: #2E3428; width: 1.35em; height: 1.7em;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 3px; position: relative; overflow: hidden;
+  border-bottom: 1px solid rgba(0,0,0,0.55);
+}
+.board .cell::after {
+  content: ''; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(0,0,0,0.55);
+}
+.board .cell.flip { animation: flip 0.42s cubic-bezier(0.45, 0, 0.55, 1); }
+@keyframes flip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); filter: brightness(0.6); }
+  100% { transform: rotateX(0); }
+}
+.hero > .wrap > p.lede { max-width: 580px; color: var(--ink-soft); font-size: 17px; }
+.cta { margin-top: 34px; display: flex; gap: 14px; flex-wrap: wrap; }
+.cta a {
+  font-family: 'IBM Plex Mono', monospace; font-size: 14px; padding: 11px 22px;
+  border: 1.5px solid var(--ink); border-radius: 999px; color: var(--ink);
+  transition: transform 0.18s ease, background 0.18s ease, color 0.18s ease, border-color 0.18s ease;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.cta a .arr { transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1); display: inline-block; }
+.cta a:hover .arr { transform: translateX(5px); }
+.cta a:hover { transform: translateY(-2px); }
+.cta a.primary { background: var(--ink); color: var(--paper); }
+.cta a.primary:hover { background: var(--rail); border-color: var(--rail); }
+.cta a:not(.primary):hover { border-color: var(--rail); color: var(--rail); }
+
+/* Ticker */
+.ticker { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); overflow: hidden; padding: 12px 0; background: #FFFDF8; }
+.ticker-track { display: flex; width: max-content; animation: scroll 30s linear infinite; }
+.ticker:hover .ticker-track { animation-play-state: paused; }
+.ticker span {
+  font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.1em;
+  color: var(--ink-soft); white-space: nowrap; padding-right: 48px; text-transform: uppercase;
+}
+.ticker span b { color: var(--gold); font-weight: 500; }
+@keyframes scroll { to { transform: translateX(-50%); } }
+
+/* Rail line + train */
+.journey { position: relative; margin-top: 76px; }
+.rail-line { position: relative; }
+.rail-line::before {
+  content: ''; position: absolute; left: 11px; top: 0; bottom: 0; width: 3px;
+  background: var(--line); border-radius: 2px;
+}
+.rail-progress {
+  position: absolute; left: 11px; top: 0; width: 3px; background: var(--rail);
+  border-radius: 2px; height: 0; z-index: 1;
+}
+.train {
+  position: absolute; left: 3.5px; top: 0; width: 18px; height: 28px; z-index: 3;
+  background: var(--gold); border-radius: 9px 9px 5px 5px;
+  box-shadow: 0 2px 8px rgba(200, 131, 10, 0.45);
+  transition: top 0.08s linear;
+}
+.train::before {
+  content: ''; position: absolute; top: 5px; left: 4px; right: 4px; height: 7px;
+  background: var(--board); border-radius: 3px;
+}
+section.stop { position: relative; padding: 0 0 84px 56px; }
+section.stop::before {
+  content: ''; position: absolute; left: 0; top: 4px; width: 25px; height: 25px;
+  border-radius: 50%; background: var(--paper); border: 3px solid var(--line);
+  transition: border-color 0.4s, background 0.4s, transform 0.3s; z-index: 2;
+}
+section.stop.lit::before { border-color: var(--rail); }
+section.stop.lit:hover::before { transform: scale(1.15); background: var(--gold); border-color: var(--gold); }
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.reveal.in { opacity: 1; transform: none; }
+
+.stop-label {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--rail); margin-bottom: 10px;
+}
+section.stop h2 {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 30px;
+  letter-spacing: -0.01em; margin-bottom: 24px;
+}
+
+/* Entries */
+.entry {
+  margin-bottom: 20px; padding: 22px 24px; border: 1px solid var(--line);
+  border-radius: 12px; background: #FFFEFB; position: relative;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s, box-shadow 0.25s;
+}
+.entry:hover { transform: translateY(-3px); border-color: var(--rail); box-shadow: 0 10px 26px rgba(26, 31, 43, 0.07); }
+.entry .meta { font-family: 'IBM Plex Mono', monospace; font-size: 12.5px; color: var(--ink-soft); margin-bottom: 4px; }
+.entry h3 { font-family: 'Archivo', sans-serif; font-weight: 500; font-size: 19px; margin-bottom: 8px; }
+.entry p { color: var(--ink-soft); font-size: 15.5px; }
+.entry ul { margin: 8px 0 0 18px; color: var(--ink-soft); font-size: 15.5px; }
+.entry ul li { margin-bottom: 6px; }
+.entry ul li::marker { color: var(--gold); }
+.tags { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.tags span {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; padding: 3px 11px;
+  border: 1px solid var(--line); border-radius: 999px; color: var(--ink-soft);
+  background: var(--paper); transition: border-color 0.2s, color 0.2s;
+}
+.entry:hover .tags span { border-color: var(--gold); color: var(--gold); }
+.proj-links { margin-top: 12px; font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; display: flex; gap: 20px; }
+
+/* Big stat strip in MARTA card */
+.stat-strip { display: flex; gap: 28px; margin-top: 16px; flex-wrap: wrap; }
+.stat-strip div { min-width: 90px; }
+.stat-strip .num { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: 30px; color: var(--rail); line-height: 1.1; }
+.stat-strip .lbl { font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; color: var(--ink-soft); letter-spacing: 0.08em; text-transform: uppercase; }
+
+/* Skills */
+.skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
+.skill-card { padding: 18px 20px; border: 1px solid var(--line); border-radius: 12px; background: #FFFEFB; transition: transform 0.25s cubic-bezier(0.22,1,0.36,1), border-color 0.25s; }
+.skill-card:hover { transform: translateY(-3px); border-color: var(--gold); }
+.skill-card h4 {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 8px;
+}
+.skill-card p { font-size: 14.5px; color: var(--ink-soft); }
+
+/* Off duty */
+.offduty { font-size: 15.5px; color: var(--ink-soft); max-width: 620px; }
+.offduty b { color: var(--ink); font-weight: 500; }
+
+/* Terminus */
+.terminus { padding: 0 0 30px 56px; position: relative; }
+.terminus::before {
+  content: ''; position: absolute; left: 0; top: 4px; width: 25px; height: 25px;
+  border-radius: 50%; background: var(--rail); border: 3px solid var(--rail); z-index: 2;
+}
+.terminus .stop-label { color: var(--gold); }
+.terminus h2 { font-family: 'Archivo', sans-serif; font-weight: 800; font-size: clamp(30px, 5vw, 44px); margin-bottom: 14px; letter-spacing: -0.015em; }
+.terminus p { color: var(--ink-soft); max-width: 540px; }
+.contact-row { margin-top: 24px; display: flex; gap: 24px; flex-wrap: wrap; font-family: 'IBM Plex Mono', monospace; font-size: 14px; }
+
+footer { margin-top: 70px; padding: 26px 0; border-top: 1px solid var(--line); }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+footer p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); }
+
+@media (max-width: 560px) {
+  section.stop, .terminus { padding-left: 42px; }
+  .rail-line::before, .rail-progress { left: 9px; }
+  section.stop::before, .terminus::before { width: 20px; height: 20px; }
+  .train { left: 2.5px; width: 16px; }
+  nav a { margin-left: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hero h1 .row span { transform: none; }
+  .reveal { opacity: 1; transform: none; }
+  .ticker-track { animation: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="mark"><b>●</b> SD // ATLANTA</span>
+    <nav>
+      <a class="u" href="#experience">Experience</a>
+      <a class="u" href="#projects">Projects</a>
+      <a class="u" href="#skills">Skills</a>
+      <a class="u" href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="wrap">
+    <p class="eyebrow">Now boarding</p>
+    <h1>
+      <span class="row"><span>Sharmila</span></span>
+      <span class="row"><span>Dongari</span></span>
+    </h1>
+    <div class="board" id="board" aria-label="Rotating roles"></div>
+    <p class="lede">Computer Science student at Georgia State University. I build enterprise Power BI models by day and ship end-to-end ML pipelines the rest of the time. Currently interning at Weyerhaeuser and researching assistive navigation for blind and low vision users.</p>
+    <div class="cta">
+      <a class="primary" href="#projects">See my work <span class="arr">→</span></a>
+      <a href="https://github.com/sharmilad24">GitHub <span class="arr">↗</span></a>
+    </div>
+  </div>
+</div>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span>Next arrival: <b>MARTA delay predictor</b> · accurate within 78 seconds</span>
+    <span>30K+ live transit records collected</span>
+    <span>838,400 material-plant combinations modeled at <b>Weyerhaeuser</b></span>
+    <span>Now researching: <b>assistive navigation</b> at GSU</span>
+    <span>Next arrival: <b>MARTA delay predictor</b> · accurate within 78 seconds</span>
+    <span>30K+ live transit records collected</span>
+    <span>838,400 material-plant combinations modeled at <b>Weyerhaeuser</b></span>
+    <span>Now researching: <b>assistive navigation</b> at GSU</span>
+  </div>
+</div>
+
+<main class="wrap journey">
+  <div class="rail-line" id="rail">
+    <div class="rail-progress" id="railProgress"></div>
+    <div class="train" id="train" aria-hidden="true"></div>
+
+    <section class="stop" id="about">
+      <p class="stop-label">Stop 01 — About</p>
+      <h2 class="reveal">The short version</h2>
+      <div class="entry reveal">
+        <p>I like the full ride: pulling messy data in, cleaning and modeling it, training something that predicts, and putting a real interface on top that people can actually use. My favorite recent build is a MARTA trip planner that predicts rail delays using a model trained on live transit data I collected myself, partly because I was tired of guessing when trains would show up.</p>
+        <p style="margin-top:12px;">Outside of data work, I research navigation systems for blind and low vision users, tutor on campus, and ran Girls Who Code back at Denmark High School.</p>
+      </div>
+    </section>
+
+    <section class="stop" id="experience">
+      <p class="stop-label">Stop 02 — Experience</p>
+      <h2 class="reveal">Where I've worked</h2>
+      <div class="entry reveal">
+        <p class="meta">May 2026 — Present · Seattle, WA</p>
+        <h3>Data Analyst Intern · Weyerhaeuser</h3>
+        <ul>
+          <li>Learning enterprise data modeling hands-on alongside a data architect, contributing to a Power BI Material Master model that integrates material, plant, and sales data for cross-functional reporting.</li>
+          <li>Supporting self-service models covering 838,400 material-plant combinations across 252 plants, helping business users explore data without manual report pulls.</li>
+        </ul>
+      </div>
+      <div class="entry reveal">
+        <p class="meta">May 2026 — Present · Atlanta, GA</p>
+        <h3>Undergraduate Researcher · Assistive Navigation Lab, GSU</h3>
+        <ul>
+          <li>Designing a 2D simulation environment to train and evaluate ML models for real-time obstacle detection and avoidance.</li>
+          <li>Iterating with my faculty advisor toward a long-term assistive device using obstacle detection and haptic feedback for blind and low vision users.</li>
+        </ul>
+      </div>
+      <div class="entry reveal">
+        <p class="meta">Aug 2023 — May 2024 · Irving, TX</p>
+        <h3>Cloud Computing Intern · BlueCloud Digital Core</h3>
+        <ul>
+          <li>Built a cloud-based data analysis pipeline in Python on AWS, handling retrieval, cleaning, and analysis end to end.</li>
+          <li>Integrated external APIs and databases to process datasets, then deployed on AWS infrastructure.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="stop" id="projects">
+      <p class="stop-label">Stop 03 — Projects</p>
+      <h2 class="reveal">Things I've shipped</h2>
+      <div class="entry reveal">
+        <p class="meta">June 2026</p>
+        <h3>MARTA Transit Reliability &amp; Trip Planner</h3>
+        <p>An end-to-end pipeline ingesting live MARTA rail data every 2 minutes into SQLite. A Random Forest model predicts train delays, and a Streamlit app routes real addresses through the rail network with transfers, geocoding, and first/last-mile handoff, plus a companion Power BI dashboard.</p>
+        <div class="stat-strip">
+          <div><div class="num" data-count="78">0</div><div class="lbl">sec accuracy</div></div>
+          <div><div class="num" data-count="30">0</div><div class="lbl">K+ records</div></div>
+          <div><div class="num" data-count="20">0</div><div class="lbl">% over baseline</div></div>
+        </div>
+        <div class="tags"><span>Python</span><span>SQL</span><span>Scikit-learn</span><span>Streamlit</span><span>Power BI</span><span>GTFS</span></div>
+        <p class="proj-links"><a class="u" href="https://marta-trip-planner.streamlit.app/">Live app ↗</a><a class="u" href="https://app.powerbi.com/links/_HWksyzxs5?ctid=a7499e28-6a7f-48d9-8b14-d3e690989660&amp;pbi_source=linkShare">Power BI dashboard ↗</a><a class="u" href="https://github.com/sharmilad24">Code ↗</a></p>
+      </div>
+      <div class="entry reveal">
+        <p class="meta">2026</p>
+        <h3>Job Market Analytics Dashboard</h3>
+        <p>A live dashboard analyzing job market trends using the Adzuna API, with Pandas for transformation and a Scikit-learn Random Forest for salary prediction, deployed on Streamlit.</p>
+        <div class="tags"><span>Python</span><span>Pandas</span><span>Scikit-learn</span><span>Streamlit</span><span>Adzuna API</span></div>
+        <p class="proj-links"><a class="u" href="https://sharmila-job-market.streamlit.app">Live app ↗</a><a class="u" href="https://github.com/sharmilad24/Job-market-dashboard">Code ↗</a></p>
+      </div>
+    </section>
+
+    <section class="stop" id="skills">
+      <p class="stop-label">Stop 04 — Skills</p>
+      <h2 class="reveal">What I work with</h2>
+      <div class="skills reveal">
+        <div class="skill-card"><h4>Languages</h4><p>Python, SQL, R, C, JavaScript, HTML</p></div>
+        <div class="skill-card"><h4>ML &amp; data science</h4><p>Scikit-learn, Pandas, NumPy, regression &amp; classification, feature engineering, model evaluation, NLP</p></div>
+        <div class="skill-card"><h4>Data engineering</h4><p>ETL pipelines, API integration, data modeling, SQL views, GTFS, time-series data</p></div>
+        <div class="skill-card"><h4>Tools &amp; platforms</h4><p>Power BI, Tableau, dbt, Git &amp; GitHub, AWS, Snowflake, SQLite, Jupyter</p></div>
+        <div class="skill-card"><h4>Certifications</h4><p>Microsoft Power BI, TensorFlow ML, NVIDIA AI Infrastructure, AWS Cloud Essentials, SQL</p></div>
+      </div>
+    </section>
+
+    <section class="stop" id="offduty">
+      <p class="stop-label">Stop 05 — Off duty</p>
+      <h2 class="reveal">When I'm not at a keyboard</h2>
+      <div class="entry reveal">
+        <p class="offduty">I spent years performing and teaching <b>classical dance</b>, including an international performance in Dubai, and I've logged a lot of volunteer hours across Atlanta, from orphanage kitchens to UNICEF campaigns. I'm convinced choreography and pipeline design are secretly the same skill: sequencing steps so nothing collides.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <div class="terminus" id="contact">
+    <p class="stop-label">Terminus — Contact</p>
+    <h2>End of the line.<br>Say hi.</h2>
+    <p>Graduating May 2028 and open to data analytics and machine learning internships. The fastest way to reach me is email.</p>
+    <div class="contact-row">
+      <a class="u" href="mailto:sdongari24@gmail.com">sdongari24@gmail.com ↗</a>
+      <a class="u" href="https://www.linkedin.com/in/sharmila-dongari-1017a42a8" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="u" href="https://github.com/sharmilad24" target="_blank" rel="noopener">GitHub ↗</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Sharmila Dongari</p>
+    <p>Hand-built. One HTML file. No framework.</p>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Split-flap board */
+  var words = ['DATA ANALYST', 'ML BUILDER', 'RESEARCHER', 'PIPELINE NERD'];
+  var board = document.getElementById('board');
+  var maxLen = Math.max.apply(null, words.map(function (w) { return w.length; }));
+  var cells = [];
+  for (var i = 0; i < maxLen; i++) {
+    var c = document.createElement('span');
+    c.className = 'cell';
+    c.textContent = ' ';
+    board.appendChild(c);
+    cells.push(c);
+  }
+  var wi = 0;
+  function setWord(word) {
+    var padded = word.padEnd(maxLen, ' ');
+    cells.forEach(function (cell, idx) {
+      var ch = padded[idx];
+      if (cell.textContent !== ch) {
+        setTimeout(function () {
+          if (!reduced) {
+            cell.classList.remove('flip');
+            void cell.offsetWidth;
+            cell.classList.add('flip');
+          }
+          setTimeout(function () { cell.textContent = ch; }, reduced ? 0 : 180);
+        }, reduced ? 0 : idx * 45);
+      }
+    });
+  }
+  setWord(words[0]);
+  setInterval(function () {
+    wi = (wi + 1) % words.length;
+    setWord(words[wi]);
+  }, 3200);
+
+  /* Scroll reveals */
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(function (el) { io.observe(el); });
+
+  /* Train follows scroll, lights stations, fills rail */
+  var rail = document.getElementById('rail');
+  var train = document.getElementById('train');
+  var progress = document.getElementById('railProgress');
+  var stops = Array.prototype.slice.call(document.querySelectorAll('section.stop'));
+  function onScroll() {
+    var rect = rail.getBoundingClientRect();
+    var viewMid = window.innerHeight * 0.45;
+    var y = Math.min(Math.max(viewMid - rect.top, 0), rect.height - 30);
+    train.style.top = y + 'px';
+    progress.style.height = y + 'px';
+    stops.forEach(function (s) {
+      var sr = s.getBoundingClientRect();
+      if (sr.top < viewMid) s.classList.add('lit'); else s.classList.remove('lit');
+    });
+  }
+  if (!reduced) {
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    onScroll();
+  } else {
+    progress.style.height = '100%';
+    stops.forEach(function (s) { s.classList.add('lit'); });
+    train.style.display = 'none';
+  }
+
+  /* Count-up stats */
+  var counted = false;
+  var statIo = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting && !counted) {
+        counted = true;
+        document.querySelectorAll('[data-count]').forEach(function (el) {
+          var target = parseInt(el.getAttribute('data-count'), 10);
+          if (reduced) { el.textContent = target; return; }
+          var start = null;
+          function step(ts) {
+            if (!start) start = ts;
+            var p = Math.min((ts - start) / 900, 1);
+            el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+            if (p < 1) requestAnimationFrame(step);
+          }
+          requestAnimationFrame(step);
+        });
+        statIo.disconnect();
+      }
+    });
+  }, { threshold: 0.4 });
+  var strip = document.querySelector('.stat-strip');
+  if (strip) statIo.observe(strip);
+})();
+</script>
+
+</body>
+</html>
