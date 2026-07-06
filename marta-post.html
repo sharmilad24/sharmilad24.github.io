@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Five bugs that taught me more than the model did — Sharmila Dongari</title>
+<meta name="description" content="What actually went wrong while building a MARTA delay predictor: database locks, lying averages, and a geocoder that sent every address to downtown Atlanta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;800&family=Inter:wght@400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --paper: #F7F6F2;
+  --ink: #1A1F2B;
+  --ink-soft: #4A5060;
+  --gold: #C8830A;
+  --rail: #0F6E56;
+  --line: #DDDBD2;
+  --board: #23281F;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+::selection { background: var(--gold); color: var(--paper); }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  line-height: 1.75;
+}
+a { color: var(--rail); text-decoration: none; border-bottom: 1.5px solid transparent; transition: border-color 0.2s; }
+a:hover { border-bottom-color: var(--rail); }
+.wrap { max-width: 680px; margin: 0 auto; padding: 0 24px; }
+
+header { padding: 24px 0; border-bottom: 1px solid var(--line); }
+header .wrap { display: flex; justify-content: space-between; align-items: center; }
+.mark { font-family: 'IBM Plex Mono', monospace; font-size: 13px; letter-spacing: 0.08em; color: var(--ink-soft); }
+.mark b { color: var(--gold); font-weight: 500; }
+header nav a { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); border: none; }
+header nav a:hover { color: var(--rail); }
+
+article { padding: 70px 0 40px; }
+.kicker {
+  font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 16px;
+}
+h1 {
+  font-family: 'Archivo', sans-serif; font-weight: 800;
+  font-size: clamp(32px, 6vw, 46px); line-height: 1.1; letter-spacing: -0.015em;
+  margin-bottom: 18px;
+}
+.byline { font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: var(--ink-soft); margin-bottom: 44px; }
+article p { margin-bottom: 20px; color: var(--ink); }
+article p.soft { color: var(--ink-soft); }
+h2 {
+  font-family: 'Archivo', sans-serif; font-weight: 700; font-size: 24px;
+  letter-spacing: -0.01em; margin: 44px 0 14px;
+  padding-left: 16px; border-left: 4px solid var(--rail);
+}
+code {
+  font-family: 'IBM Plex Mono', monospace; font-size: 0.86em;
+  background: #EDEBE3; padding: 2px 6px; border-radius: 4px;
+}
+pre {
+  background: var(--board); color: #E8E6DC; border-radius: 10px;
+  padding: 18px 20px; overflow-x: auto; margin: 0 0 20px;
+  font-family: 'IBM Plex Mono', monospace; font-size: 13.5px; line-height: 1.6;
+}
+pre code { background: none; padding: 0; color: inherit; }
+.callout {
+  border: 1px solid var(--line); border-left: 4px solid var(--gold);
+  background: #FFFDF6; border-radius: 8px; padding: 16px 20px; margin: 0 0 20px;
+  font-size: 15.5px; color: var(--ink-soft);
+}
+.callout b { color: var(--ink); }
+.post-footer { margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--line); }
+.post-footer p { font-size: 15px; color: var(--ink-soft); }
+footer { margin-top: 60px; padding: 26px 0; border-top: 1px solid var(--line); }
+footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+footer p { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="mark"><b>●</b> SD // ATLANTA</span>
+    <nav><a href="index.html">← Back to the line</a></nav>
+  </div>
+</header>
+
+<article class="wrap">
+  <p class="kicker">Writing — 01</p>
+  <h1>Five bugs that taught me more than the model did</h1>
+  <p class="byline">July 2026 · Building a MARTA delay predictor</p>
+
+  <p>Last month I built a trip planner for MARTA, the Atlanta rail system. It collects live train data every two minutes, stores it in SQLite, and uses a Random Forest model to predict delays within 78 seconds, about 20 percent better than a simple baseline. There is a Streamlit app that routes real addresses through the rail network and a Power BI dashboard on top of the same pipeline.</p>
+
+  <p>That is the version that goes on a resume. This post is about the other version, the five problems that actually taught me something. None of them were machine learning problems. All of them were the kind of thing you only learn by shipping.</p>
+
+  <h2>1. The file that existed but did not exist</h2>
+  <p>Early on, Python kept telling me my data file did not exist. I could see the file. I could open it. Python insisted it was not there. This happened more than once before I understood what was going on.</p>
+  <p>My scripts were saving files relative to wherever I happened to run them from, and sometimes that meant everything landed inside my virtual environment folder instead of the project root. So the file existed, just not where the next script was looking.</p>
+  <p>The fix was boring and permanent: stop trusting relative paths. Anchor everything to the project root and build paths from there. I have not lost a file since.</p>
+  <div class="callout"><b>What it taught me:</b> when the computer says something impossible, one of your assumptions is wrong. The file exists and the file cannot be found were both true. The hidden assumption was that we agreed on where here was.</div>
+
+  <h2>2. Database is locked, again</h2>
+  <p>This was the bug that ate real time. My collector wrote fresh train data into SQLite every two minutes. That part worked great. But whenever the Streamlit app or any analysis script tried to read while the collector was writing, everything crashed with one short message: database is locked.</p>
+  <p>I went through the classic arc. First I added a longer timeout, which just made the crash slower. Then I tried enabling write-ahead logging, and the command to switch it on got blocked by the very lock I was trying to fix. The thing that finally held was opening every reader in true read-only mode so it never tried to take a write lock at all:</p>
+  <pre><code>conn = sqlite3.connect("file:marta.db?mode=ro", uri=True)</code></pre>
+  <p>One writer, many readers, nobody fighting over the lock.</p>
+  <div class="callout"><b>What it taught me:</b> concurrency problems do not care that your code is correct in isolation. Both my writer and my readers were fine alone. The bug lived in the space between them.</div>
+
+  <h2>3. The Green Line was arriving early, apparently</h2>
+  <p>My first average delay by line chart said the Green Line was running 9 minutes early. Trains do not run 9 minutes early. For a few minutes I wondered if I had discovered something. I had not. I had discovered a small sample.</p>
+  <p>Early in collection, the Green Line only had a handful of records, and a couple of odd readings dragged the whole average negative. Once I filtered out lines below a minimum record count, the nonsense disappeared and the chart started telling the truth.</p>
+  <div class="callout"><b>What it taught me:</b> small samples lie confidently. Now any aggregate I show comes with a sample size check first, because an average without one is just a rumor with an axis.</div>
+
+  <h2>4. Every address in Georgia was apparently downtown Atlanta</h2>
+  <p>The trip planner has a first and last mile feature that estimates the drive between your address and the nearest station. It shipped broken, and it was broken silently, which is the worst kind.</p>
+  <p>My geocoding code force-appended Atlanta, GA to every address to help the geocoder out. Which worked fine for Atlanta addresses and quietly relocated everyone else. Stone Mountain showed up as 0.8 miles from a station when it should have been well over 5. Nothing crashed. The numbers were just wrong.</p>
+  <p>I only caught it because I sanity-checked a trip I personally knew. The fix was to stop mangling the input and let the geocoder see the real address, with the search biased to Georgia instead of hard-coded to one city.</p>
+  <div class="callout"><b>What it taught me:</b> silent wrong answers are more dangerous than crashes. A crash files its own bug report. A wrong distance just sits there looking plausible. Test with inputs where you already know the answer.</div>
+
+  <h2>5. The router that gave up at Five Points</h2>
+  <p>The first version of my router only handled trips on a single line. Ask it for Georgia State to the Airport, one of the most common real trips in the city, and it returned nothing, because that trip needs a transfer at Five Points and my router did not know transfers existed.</p>
+  <p>Building transfer handling meant treating the network like an actual graph, where Five Points connects lines, rather than four separate lines that happen to share a map. Once transfers worked, routes that real riders actually take started resolving.</p>
+  <div class="callout"><b>What it taught me:</b> your first data model is usually a simplification of the real system, and the gap shows up exactly where users live. The single line assumption was invisible until the most normal trip in Atlanta broke it.</div>
+
+  <h2>What I would tell someone starting a similar project</h2>
+  <p>The model was honestly the easy part. Scikit-learn is mature, Random Forests are forgiving, and feature engineering on time series data is well documented. Almost all of my debugging time went into the unglamorous layer underneath: file paths, database locks, geocoding, and the difference between a network diagram and a real network.</p>
+  <p>If I could send one sentence back to myself at the start, it would be this: build the smallest end to end version first, one line, one station pair, one prediction, and only then make it bigger. Every one of these five bugs would have surfaced earlier and cheaper.</p>
+
+  <div class="post-footer">
+    <p>The trip planner is live at <a href="https://marta-trip-planner.streamlit.app/">marta-trip-planner.streamlit.app</a> and the rest of my work is at <a href="index.html">sharmilad24.github.io</a>. If you are building something with transit data and hit a wall, my email is on the homepage, I have probably hit the same wall.</p>
+  </div>
+</article>
+
+<footer>
+  <div class="wrap">
+    <p>© 2026 Sharmila Dongari</p>
+    <p>Hand-built. One HTML file. No framework.</p>
+  </div>
+</footer>
+
+</body>
+</html>
